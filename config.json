@@ -1,0 +1,21 @@
+{
+  "target_county": "Escambia",
+  "target_county_comment": "Supply ONE county name, or 'Florida' / 'All' for statewide synthpop generation. Case sensitive.",
+  
+  "data_folder": "C:/Users/kokbent/Dropbox (UFL)/COVID-FL/",
+  "path_county_shape": "shapefiles/cntdem/cntdem_acs_2018.shp",
+  "path_cenblock_shape": "shapefiles/cenacs/cenacs_2018.shp",
+  "path_centract_puma": "shapefiles/2010_Census_Tract_to_2010_PUMA.txt",
+  "path_ipums_xml": "demographics/usa_00002.xml",
+  "path_ipums_dat": "demographics/usa_00002.dat",
+  "path_hhdens_raster": "demographics/usgrid_data_2010/geotiff/flhh10.tif",
+  "path_wac_shape": "shapefiles/lehdwac_blk_2015/lehdwac_blk_2015.shp",
+  "path_naics_size": "demographics/NAICS_employment_sizes.csv",
+  "path_naics_lookup": "demographics/naics_1712_lookup.csv",
+  "path_workplace": "location_data/workplaces/geocoded_workplaces_w_naics_w_essential.csv",
+  "path_nh": "location_data/retirement_communities/FL_Nursing_Homes.csv",
+  "path_schools_shape": "shapefiles/gc_schools/gc_schools_sep17.shp",
+  "path_col_uni_size": "location_data/schools/cu_wsize.csv",
+  "path_hf": "location_data/hf_ahca.tsv",
+  "path_brfss": "/demographics/BRFSS/2016/brfss_probs.csv"
+}
