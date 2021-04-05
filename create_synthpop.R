@@ -8,6 +8,8 @@ library(stringr)
 library(ipumsr)
 library(doSNOW)
 library(abmgravity)
+library(dbplyr)
+library(RSQLite)
 
 lcfg <- jsonlite::read_json("synth/local_config.json", simplifyVector = T)
 
