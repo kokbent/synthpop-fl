@@ -2,6 +2,11 @@
 Code to generate synthetic population for Florida to be used for an agent-based model.
 
 # Usage
+The code depends specifically on a library `abmgravity` that is not available on CRAN. To install that package:
+```
+devtools::install_github("kokbent/abmgravity")
+```
+
 To generate statewide or ONE county specific population:
 ```
 Rscript gen_dataset_for_synth.R config.json
