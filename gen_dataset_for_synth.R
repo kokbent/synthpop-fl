@@ -100,8 +100,7 @@ cenacs1 <- cenacs1 %>% select(-PUMA5CE, -SHAPE_AREA, -SHAPE_LEN, -ALAND, -AWATER
 cenacs_fn <- basename(cfg$path_cenblock_shape)
 cenacs_fn1 <- str_split(cenacs_fn, "[.]")[[1]][1]
 st_write(cenacs1, dsn = "synth/data", layer = cenacs_fn1,
-         driver = "ESRI Shapefile", delete_layer = TRUE,
-         overwrite = T)
+         driver = "ESRI Shapefile", delete_layer = TRUE)
 
 synth_paths$path_cenblock_shape <- file.path("synth/data", cenacs_fn)
 
@@ -156,8 +155,7 @@ sch_fn1 <- str_split(sch_fn, "[.]")[[1]][1]
 synth_paths$path_schools_shape <- file.path("synth/data", sch_fn)
 
 st_write(gc_sch, dsn = "synth/data", layer = sch_fn1,
-         driver = "ESRI Shapefile", delete_layer = TRUE,
-         overwrite = T)
+         driver = "ESRI Shapefile", delete_layer = TRUE)
 
 ## College and University category has additional file
 cu <- data.table::fread(cfg$path_col_uni_size)
@@ -183,8 +181,7 @@ wac_fn1 <- str_split(wac_fn, "[.]")[[1]][1]
 synth_paths$path_wac_shape <- file.path("synth/data", wac_fn)
 
 st_write(wac, dsn = "synth/data", layer = wac_fn1,
-         driver = "ESRI Shapefile", delete_layer = TRUE,
-         overwrite = T)
+         driver = "ESRI Shapefile", delete_layer = TRUE)
 
 ## Test if it works
 wac <- st_read(synth_paths$path_wac_shape)
