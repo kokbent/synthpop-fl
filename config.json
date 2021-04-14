@@ -2,6 +2,9 @@
   "target_county": "Escambia",
   "target_county_comment": "Supply ONE county name, or 'Florida' / 'All' for statewide synthpop generation. Case sensitive.",
   
+  "extracurricular": 0,
+  "use_statewide_census": 0,
+  
   "data_folder": "C:/Users/kokbent/Dropbox (UFL)/COVID-FL/",
   "path_county_shape": "shapefiles/cntdem/cntdem_acs_2018.shp",
   "path_cenblock_shape": "shapefiles/cenacs/cenacs_2018.shp",
@@ -17,5 +20,6 @@
   "path_schools_shape": "shapefiles/gc_schools/gc_schools_sep17.shp",
   "path_col_uni_size": "location_data/schools/cu_wsize.csv",
   "path_hf": "location_data/hf_ahca.tsv",
-  "path_brfss": "/demographics/BRFSS/2016/brfss_probs.csv"
+  "path_brfss": "demographics/BRFSS/2016/brfss_probs.csv",
+  "path_patterns": "demographics/prepandemic-visits.csv"
 }

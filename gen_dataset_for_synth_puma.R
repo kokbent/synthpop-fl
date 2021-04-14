@@ -8,6 +8,8 @@ library(tidyverse)
 library(stringr)
 source("utils.R")
 
+options(datatable.na.strings=c("", "NA")) # Making sure data.table properly reads NA
+
 #### Getting args from Rscript, and displaying basics
 args <- commandArgs(trailingOnly=TRUE)
 if(length(args) == 1) {
@@ -48,7 +50,11 @@ data$PUMA1 <- str_pad(data$PUMA,
                       pad = "0")
 
 ## Identify the lines that are within target county
-ind <- which(data$PUMA1 %in% cfg$target_puma)
+if (cfg$use_statewide_census != 1) {
+  ind <- which(data$PUMA1 %in% cfg$target_puma)  
+} else {
+  ind <- 1:nrow(data)
+}
 
 dat_in <- read_lines(cfg$path_ipums_dat)
 dat_out <- dat_in[ind]
@@ -217,6 +223,18 @@ brfss_fn <- basename(cfg$path_brfss)
 synth_paths$path_brfss <- file.path("synth/data", brfss_fn)
 
 file.copy(cfg$path_brfss, synth_paths$path_brfss, overwrite = T)
+
+#### Passing additional parameters - Extracurricular ----
+synth_paths$extracurricular <- cfg$extracurricular
+if (cfg$extracurricular != 0) {
+  patterns_fn <- basename(cfg$path_patterns)
+  synth_paths$path_patterns <- file.path("synth/data", patterns_fn)
+  
+  file.copy(cfg$path_patterns, synth_paths$path_patterns, overwrite = T)
+}
+
+#### Passing additional parameters 2  ----
+synth_path$use_statewide_census <- cfg$use_statewide_census
 
 #### Export synth_path as JSON
 jsonlite::write_json(synth_paths, "synth/local_config.json")

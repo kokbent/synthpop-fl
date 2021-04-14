@@ -1,14 +1,11 @@
 {
-  "target_puma": ["08601", "08602", "08603", "08604", "08605", "08606", "08607", "086068", 
-                  "08609", "08610", "08611", "08612", "08613", "08614", "08615", 
-                  "08616", "08617", "08618", "08619", "08620", "08621", "08622", 
-                  "08623", "08624", "08700"],
-  "target_puma_comment": "Supply one or many puma number (in character with leading zero, five digits). Default numbers are Dade county.",
+  "target_county": "Marion",
+  "target_county_comment": "Supply ONE county name, or 'Florida' / 'All' for statewide synthpop generation. Case sensitive.",
   
-  "extracurricular": 0,
-  "use_statewide_census": 0,
+  "extracurricular": 1,
+  "use_statewide_census": 1,
+  "output_name": "pseudo-300K",
   
-  "output_name": "Dade",
   "data_folder": "C:/Users/kokbent/Dropbox (UFL)/COVID-FL/",
   "path_county_shape": "shapefiles/cntdem/cntdem_acs_2018.shp",
   "path_cenblock_shape": "shapefiles/cenacs/cenacs_2018.shp",
@@ -24,5 +21,6 @@
   "path_schools_shape": "shapefiles/gc_schools/gc_schools_sep17.shp",
   "path_col_uni_size": "location_data/schools/cu_wsize.csv",
   "path_hf": "location_data/hf_ahca.tsv",
-  "path_brfss": "/demographics/BRFSS/2016/brfss_probs.csv"
+  "path_brfss": "demographics/BRFSS/2016/brfss_probs.csv",
+  "path_patterns": "demographics/prepandemic-visits.csv"
 }

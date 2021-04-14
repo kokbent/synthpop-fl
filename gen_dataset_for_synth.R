@@ -8,6 +8,8 @@ library(tidyverse)
 library(stringr)
 source("utils.R")
 
+options(datatable.na.strings=c("", "NA")) # Making sure data.table properly reads NA
+
 #### Getting args from Rscript, and displaying basics
 args <- commandArgs(trailingOnly=TRUE)
 if(length(args) == 1) {
@@ -31,8 +33,12 @@ if (cfg$target_county %in% c("Florida", "All")) {
 }
 
 synth_paths <- list() # Collect "localized" paths
-synth_paths$target_county <- ifelse(cfg$target_county == "All", "florida", 
-                                    tolower(cfg$target_county))
+if (is.null(cfg$output_name)) {
+  synth_paths$target_county <- ifelse(cfg$target_county == "All", "florida", 
+                                      tolower(cfg$target_county))
+} else {
+  synth_paths$target_county <- cfg$output_name
+}
 
 dir.create("synth/data")
 
@@ -61,7 +67,11 @@ data$COUNTYFIP1 <- str_pad(data$COUNTYFIP,
                            pad = "0")
 
 ## Identify the lines that are within target county
-ind <- which(data$COUNTYFIP1 == fips)
+if (cfg$use_statewide_census != 1) {
+  ind <- which(data$COUNTYFIP1 == fips)  
+} else {
+  ind <- 1:nrow(data)
+}
 
 dat_in <- read_lines(cfg$path_ipums_dat)
 dat_out <- dat_in[ind]
@@ -197,7 +207,7 @@ file.copy(cfg$path_naics_lookup, "synth/data/", overwrite = T)
 synth_paths$path_naics_lookup <- file.path("synth/data", naics_lkup_fn)
 
 #### NCD Workplace data ----
-wp_coords <- data.table::fread(cfg$path_workplace)
+wp_coords <- fread(cfg$path_workplace)
 
 wp_sp <- wp_coords[,c("x", "y")] %>%
   as.data.frame %>% 
@@ -230,6 +240,18 @@ brfss_fn <- basename(cfg$path_brfss)
 synth_paths$path_brfss <- file.path("synth/data", brfss_fn)
 
 file.copy(cfg$path_brfss, synth_paths$path_brfss, overwrite = T)
+
+#### Passing additional parameters - Extracurricular ----
+synth_paths$extracurricular <- cfg$extracurricular
+if (cfg$extracurricular != 0) {
+  patterns_fn <- basename(cfg$path_patterns)
+  synth_paths$path_patterns <- file.path("synth/data", patterns_fn)
+  
+  file.copy(cfg$path_patterns, synth_paths$path_patterns, overwrite = T)
+}
+
+#### Passing additional parameters 2  ----
+synth_paths$use_statewide_census <- cfg$use_statewide_census
 
 #### Export synth_path as JSON
 jsonlite::write_json(synth_paths, "synth/local_config.json")

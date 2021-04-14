@@ -40,6 +40,9 @@ ipums_hh2 <- hh_dat %>%
   group_by(PUMA) %>%
   summarise(HH = sum(HHWT))
 ipums_hh$HH_need <- ipums_hh2$HH * ipums_hh$PW_INF
+ipums_hh <- ipums_hh %>%
+  filter(PUMA %in% as.numeric(cenacs_hh$PUMA5CE)) %>%
+  arrange(PUMA)
 
 cenacs_hh$scale <- ipums_hh$HH_need / cenacs_hh$HH
 cenacs@data <- cenacs@data %>% left_join(cenacs_hh %>% select(PUMA5CE, scale))
@@ -104,11 +107,18 @@ for (i in 1:length(pumas)) {
   print(i)
   cond <- hh_xy_puma$PUMA5CE == pumas[i]
   
-  hh_samp <- hh_dat %>%
-    filter(PUMA == as.numeric(pumas[i])) %>%
-    sample_n(size = sum(cond), 
-             replace = T,
-             weight = HHWT)
+  if (lcfg$use_statewide_census == 0) {
+    hh_samp <- hh_dat %>%
+      filter(PUMA == as.numeric(pumas[i])) %>%
+      sample_n(size = sum(cond), 
+               replace = T,
+               weight = HHWT)
+  } else {
+    hh_samp <- hh_dat %>%
+      sample_n(size = sum(cond), 
+               replace = T,
+               weight = HHWT)
+  }
   
   hh_xy_puma[cond,c("YEAR", "SERIAL")] <- hh_samp[,c("YEAR", "SERIAL")]
   

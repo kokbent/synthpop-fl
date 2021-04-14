@@ -91,8 +91,10 @@ wp <- wp %>%
   left_join(loc %>% 
               filter(type == "w") %>%
               select(wid2, locid))
+
+addtl_col <- ifelse(lcfg$extracurricular==0, "dummy", "transmission")
 wp_db <- wp %>%
-  select(locid, wid2, worker, naics, essential = ess_class) %>%
+  select(locid, wid2, worker, naics, essential = ess_class, contains(addtl_col)) %>%
   mutate(essential = case_when(
     is.na(essential) ~ "n",
     essential == "" ~ "n",
@@ -208,8 +210,8 @@ rm(reside_hh_db)
 # cnt_name <- str_replace_all(cnt_name, " ", "-")
 # cnt_name <- tolower(cnt_name)
 
-dirname <- paste0("synth/sim_pop-", lcfg$target_county, "-3.0")
-sqlitename <- paste0(dirname, paste0("/sim_pop-", lcfg$target_county, "-3.0.sqlite"))
+dirname <- paste0("synth/sim_pop-", lcfg$target_county, "-3.1")
+sqlitename <- paste0(dirname, paste0("/sim_pop-", lcfg$target_county, "-3.1.sqlite"))
 dir.create(dirname)
 mydb <- dbConnect(RSQLite::SQLite(), sqlitename)
 dbWriteTable(mydb, "loc", loc)
@@ -271,14 +273,16 @@ rm(hh_edge, hh_edge1, hh_edge2)
 # rm(nb_edge, nb_edge1, nb_edge2, hh_loc)
 
 ## Extracurricular (WID2 is the same as locid)
-# ec <- fread("synth/output/extracurricular.csv")
-# loc_nonhh <- loc %>% filter(type != "h")
-# colnames(ec) <- c("pid", paste0("dest_locid_", 1:5))
-# dbWriteTable(mydb, "extracurr", ec)
+if (lcfg$extracurricular != 0) {
+  ec <- fread("synth/output/extracurricular.csv")
+  if (na.omit(loc$wid2 - loc$locid != 0) %>% any()) stop("some locid not equal to wid2, extracurricular output will be affected.")
+  colnames(ec) <- c("pid", paste0("dest_locid_", 1:5))
+  dbWriteTable(mydb, "extracurr", ec)
+}
 
 dbDisconnect(mydb)
 
-tgzname <- paste0("sim_pop-", lcfg$target_county, "-3.0.tgz")
+tgzname <- paste0("sim_pop-", lcfg$target_county, "-3.1.tgz")
 filesname <- str_split(dirname, "/")[[1]][2]
 setwd("synth/")
 tar(tgzname, files = filesname, compression = "gzip")
