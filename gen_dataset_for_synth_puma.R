@@ -34,6 +34,9 @@ synth_paths <- list() # Collect "localized" paths
 synth_paths$target_county <- cfg$output_name
 
 dir.create("synth/data")
+lof <- list.files("synth/data", full.names = T)
+lof <- lof[!str_detect(lof, "reusable")]
+file.remove(lof)
 
 #### Generate Dataset
 ## FIPS not needed anymore, skipping counties stuff

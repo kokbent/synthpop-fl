@@ -5,3 +5,4 @@
 *.Rproj
 synth/data
 synth/output
+synth/sim_pop-*

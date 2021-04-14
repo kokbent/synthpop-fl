@@ -41,6 +41,9 @@ if (is.null(cfg$output_name)) {
 }
 
 dir.create("synth/data")
+lof <- list.files("synth/data", full.names = T)
+lof <- lof[!str_detect(lof, "reusable")]
+file.remove(lof)
 
 #### Generate Dataset
 ## Starts with looking for the correct FIPS
