@@ -15,7 +15,7 @@ Rscript create_synthpop.R
 
 To generate population for one or multiple PUMA(s):
 ```
-Rscript gen_dataset_for_synth.R config_puma.json
+Rscript gen_dataset_for_synth_puma.R config_puma.json
 Rscript create_synthpop.R
 ```
 
