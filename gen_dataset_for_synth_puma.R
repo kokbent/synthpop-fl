@@ -237,7 +237,7 @@ if (cfg$extracurricular != 0) {
 }
 
 #### Passing additional parameters 2  ----
-synth_path$use_statewide_census <- cfg$use_statewide_census
+synth_paths$use_statewide_census <- cfg$use_statewide_census
 
 #### Export synth_path as JSON
 jsonlite::write_json(synth_paths, "synth/local_config.json")
