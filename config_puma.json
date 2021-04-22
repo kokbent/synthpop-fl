@@ -1,9 +1,9 @@
 {
-  "target_puma": ["08601", "08602", "08603", "08604", "08605", "08606", "08607", "086068", 
+  "target_puma": ["08601", "08602", "08603", "08604", "08605", "08606", "08607", "08608", 
                   "08609", "08610", "08611", "08612", "08613", "08614", "08615", 
                   "08616", "08617", "08618", "08619", "08620", "08621", "08622", 
                   "08623", "08624", "08700"],
-  "target_puma_comment": "Supply one or many puma number (in character with leading zero, five digits). Default numbers are Dade county.",
+  "target_puma_comment": "Supply one or more PUMA numbers (five digits, but given as quoted string to retain leading zero). Default PUMA numbers above cover Dade county.",
   
   "extracurricular": 0,
   "use_statewide_census": 0,
