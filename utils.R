@@ -11,3 +11,10 @@ make_full_path <- function (cfg) {
   
   return(cfg)
 }
+
+quiet <- function(x) { 
+  options(warn=-1)
+  sink(tempfile()) 
+  on.exit({sink();options(warn=0)}) 
+  invisible(force(x)) 
+} 
