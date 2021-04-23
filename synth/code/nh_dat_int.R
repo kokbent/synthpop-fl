@@ -28,4 +28,4 @@ nh1 <- nh %>%
 
 
 #### Export ----
-data.table::fwrite(nh1, "synth/output/nh.csv")
+data.table::fwrite(nh1, "synth/tmp/nh.csv")

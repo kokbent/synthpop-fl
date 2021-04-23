@@ -2,15 +2,15 @@
 # rm(list=ls())
 
 #### Data import
-wp <- fread("synth/output/wp2.csv")
+wp <- fread("synth/tmp/wp2.csv")
 head(wp)
 colnames(wp) <- tolower(colnames(wp))
 
-hh <- fread("synth/output/hh_coords.csv")
+hh <- fread("synth/tmp/hh_coords.csv")
 head(hh)
 colnames(hh) <- tolower(colnames(hh))
 
-nh <- fread("synth/output/nh.csv")
+nh <- fread("synth/tmp/nh.csv")
 head(nh)
 colnames(nh) <- tolower(colnames(nh))
 nh <- nh %>%
@@ -19,7 +19,7 @@ nh <- nh %>%
             by = c("nhid" = "serial")) %>%
   select(nhid, wid2, x, y, pop, worker, rep_pop)
 
-sch <- fread("synth/output/sch.csv")
+sch <- fread("synth/tmp/sch.csv")
 head(sch)
 colnames(sch) <- tolower(colnames(sch))
 sch <- sch %>%
@@ -28,7 +28,7 @@ sch <- sch %>%
             by = c("sid" = "serial")) %>%
   select(sid, x, y, student, worker, wid2)
 
-hf <- fread("synth/output/hf.csv")
+hf <- fread("synth/tmp/hf.csv")
 head(hf)
 colnames(hf) <- tolower(colnames(hf))
 hf <- hf %>%
@@ -37,7 +37,7 @@ hf <- hf %>%
             by = c("hfid" = "serial")) %>%
   select(hfid, x, y, licensed_beds, ahca_number, worker, wid2)
 
-pers <- fread("synth/output/pers_w_wid.csv")
+pers <- fread("synth/tmp/pers_w_wid.csv")
 head(pers)
 colnames(pers) <- tolower(colnames(pers))
 
@@ -210,8 +210,9 @@ rm(reside_hh_db)
 # cnt_name <- str_replace_all(cnt_name, " ", "-")
 # cnt_name <- tolower(cnt_name)
 
-dirname <- paste0("synth/sim_pop-", lcfg$target_county, "-3.1")
-sqlitename <- paste0(dirname, paste0("/sim_pop-", lcfg$target_county, "-3.1.sqlite"))
+dirname <- paste0("synth/sim_pop-", lcfg$target_county, "-", lcfg$vers)
+sqlitename <- paste0(dirname, paste0("/sim_pop-", lcfg$target_county, 
+                                     "-", lcfg$vers, ".sqlite"))
 dir.create(dirname)
 mydb <- dbConnect(RSQLite::SQLite(), sqlitename)
 dbWriteTable(mydb, "loc", loc)
@@ -234,7 +235,7 @@ rm(reside_db)
 gc()
 
 ## HH Network
-hh_edge <- fread("synth/output/hh_network.csv")
+hh_edge <- fread("synth/tmp/hh_network.csv")
 hh_loc <- loc %>%
   filter(type == "h") %>%
   select(locid, hid)
@@ -255,7 +256,7 @@ dbWriteTable(mydb, "hh_network", hh_edge)
 rm(hh_edge, hh_edge1, hh_edge2)
 
 ## Neighbour Network
-# nb_edge <- fread("synth/output/neighbour_network.csv")
+# nb_edge <- fread("synth/tmp/neighbour_network.csv")
 
 # nb_edge1 <- nb_edge %>%
 #   select(hid1) %>%
@@ -274,7 +275,7 @@ rm(hh_edge, hh_edge1, hh_edge2)
 
 ## Extracurricular (WID2 is the same as locid)
 if (lcfg$extracurricular != 0) {
-  ec <- fread("synth/output/extracurricular.csv")
+  ec <- fread("synth/tmp/extracurricular.csv")
   if (na.omit(loc$wid2 - loc$locid != 0) %>% any()) stop("some locid not equal to wid2, extracurricular output will be affected.")
   colnames(ec) <- c("pid", paste0("dest_locid_", 1:5))
   dbWriteTable(mydb, "extracurr", ec)
@@ -282,9 +283,17 @@ if (lcfg$extracurricular != 0) {
 
 dbDisconnect(mydb)
 
-tgzname <- paste0("sim_pop-", lcfg$target_county, "-3.1.tgz")
+cat("=================================================\n")
+cat("Synthetic population data written into SQLite database ", sqlitename, "\n")
+
+tgzname <- paste0("sim_pop-", lcfg$target_county, "-", lcfg$vers, ".tgz")
 filesname <- str_split(dirname, "/")[[1]][2]
 setwd("synth/")
 tar(tgzname, files = filesname, compression = "gzip")
+cat("SQLite database compressed into synth/", tgzname, "\n")
 unlink(filesname, recursive = T)
+cat("SQLite database and its subfolder removed.\n")
 setwd("../")
+
+cat("Done.",
+    paste0("To extract ABM input .txt files, go to synth/ subfolder and run 'Rscript extract_sqlite-", lcfg$vers, ".R ", tgzname, "'.\n"))

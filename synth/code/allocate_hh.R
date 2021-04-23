@@ -136,7 +136,7 @@ person_xy$PID <- 1:nrow(person_xy)
 #### Moving GQ == 3 and AGE >= 55 people to NH
 nh_pop <- person_xy %>%
   filter(GQ == 3, AGE >= 55)
-nh <- data.table::fread("synth/output/nh.csv", keepLeadingZeros = T)
+nh <- data.table::fread("synth/tmp/nh.csv", keepLeadingZeros = T)
 
 nh_pop$NHID <- NA
 for (i in 1:length(pumas)) {
@@ -175,11 +175,10 @@ sum(nh$WORKER, na.rm = T)
 #### Assign compliance score: for now at random
 hh_xy_puma$compliance <- runif(nrow(hh_xy_puma))
 
-
 #### Export
 fwrite(hh_xy_puma %>% select(HID, x, y, SERIAL, PUMA5CE, COUNTYFP10, compliance),
-       "synth/output/hh_coords.csv")
+       "synth/tmp/hh_coords.csv")
 fwrite(person_xy %>% select(PID, HID, NHID, SEX, AGE, SCHOOL, EMPSTATD, PWSTATE2, PWPUMA00, GQ),
-       "synth/output/person_details.csv")
+       "synth/tmp/person_details.csv")
 fwrite(nh %>% select(NHID, x = X, y = Y, WORKER, POP, PUMA5CE, REP_POP),
-       "synth/output/nh.csv")
+       "synth/tmp/nh.csv")

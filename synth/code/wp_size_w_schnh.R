@@ -18,8 +18,8 @@ wp_coords <- wp_coords %>%
   select(-naics_classification_notes)
 
 ## NH
-if (file.exists("synth/output/nh.csv")) {
-  nh <- fread("synth/output/nh.csv") %>%
+if (file.exists("synth/tmp/nh.csv")) {
+  nh <- fread("synth/tmp/nh.csv") %>%
     mutate(SERIAL = NHID, TYPE = "n") %>%
     select(SERIAL, x, y, WORKER, TYPE)
 } else {
@@ -27,8 +27,8 @@ if (file.exists("synth/output/nh.csv")) {
 }
 
 ## SCH
-if (file.exists("synth/output/sch.csv")) {
-  sch <- fread("synth/output/sch.csv") %>%
+if (file.exists("synth/tmp/sch.csv")) {
+  sch <- fread("synth/tmp/sch.csv") %>%
     mutate(SERIAL = SID, TYPE = "s") %>%
     select(SERIAL, x, y, WORKER, TYPE)
 } else {
@@ -36,8 +36,8 @@ if (file.exists("synth/output/sch.csv")) {
 }
 
 ## HF
-if (file.exists("synth/output/hf.csv")) {
-  hf <- fread("synth/output/hf.csv") %>%
+if (file.exists("synth/tmp/hf.csv")) {
+  hf <- fread("synth/tmp/hf.csv") %>%
     mutate(SERIAL = HFID, TYPE = "hf") %>%
     select(SERIAL, x = X, y = Y, WORKER, TYPE)
 } else {
@@ -237,4 +237,4 @@ abline(0, 1)
 wp2 <- wp1 %>%
   select(WID, TYPE, x=X, y=Y, WORKER, SERIAL, NAICS, ESS_CLASS = naics_essential_classification)
 
-fwrite(wp2, "synth/output/wp.csv")
+fwrite(wp2, "synth/tmp/wp.csv")

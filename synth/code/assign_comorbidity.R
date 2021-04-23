@@ -4,8 +4,8 @@ rm(list=ls()[ls() != "lcfg"])
 
 #### Load Data ----
 brfss <- fread(lcfg$path_brfss)
-pers <- fread("synth/output/pers_w_wid.csv")
-hh <- fread("synth/output/hh_coords.csv")
+pers <- fread("synth/tmp/pers_w_wid.csv")
+hh <- fread("synth/tmp/hh_coords.csv")
 
 #### Assign "number of visitors" (as weight) to all WP, NH and HF
 set.seed(4326 + 23)
@@ -56,4 +56,4 @@ pers1$UNDLYCOND[cond] <- rbinom(sum(cond), 1, 0.206)
 pers <- pers %>%
   left_join(pers1 %>% select(PID, UNDLYCOND))
 
-fwrite(pers, "synth/output/pers_w_wid.csv")
+fwrite(pers, "synth/tmp/pers_w_wid.csv")

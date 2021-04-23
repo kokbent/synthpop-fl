@@ -4,8 +4,8 @@ rm(list=ls()[ls() != "lcfg"])
 
 #### Data import ----
 ## PERS
-gen_pers <- fread("synth/output/person_details.csv")
-gen_hh <- fread("synth/output/hh_coords.csv")
+gen_pers <- fread("synth/tmp/person_details.csv")
+gen_hh <- fread("synth/tmp/hh_coords.csv")
 
 ## SCH
 gc_sch <- st_read(lcfg$path_schools_shape)
@@ -176,5 +176,5 @@ gc_sch3$WORKER <- ceiling(gc_sch3$STUDENT / 7)
 
 
 #### Export ----
-fwrite(gc_sch3, "synth/output/sch.csv")
-fwrite(gen_pers, "synth/output/person_details.csv")
+fwrite(gc_sch3, "synth/tmp/sch.csv")
+fwrite(gen_pers, "synth/tmp/person_details.csv")

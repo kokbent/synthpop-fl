@@ -3,8 +3,8 @@ rm(list=ls()[ls() != "lcfg"])
 #### Integrate School data into the population
 #### Data import ----
 ## PERS
-gen_pers <- fread("synth/output/person_details.csv")
-gen_hh <- fread("synth/output/hh_coords.csv")
+gen_pers <- fread("synth/tmp/person_details.csv")
+gen_hh <- fread("synth/tmp/hh_coords.csv")
 
 ## HF
 hf_dat <- fread(lcfg$path_hf)
@@ -35,5 +35,5 @@ gen_hh$HFID[assign_mat[,1]] <- assign_mat[,2]
 hf_dat$WORKER <- hf_dat$Licensed_Beds * 8
 
 #### Export ----
-fwrite(hf_dat, "synth/output/hf.csv")
-fwrite(gen_hh, "synth/output/hh_coords.csv")
+fwrite(hf_dat, "synth/tmp/hf.csv")
+fwrite(gen_hh, "synth/tmp/hh_coords.csv")

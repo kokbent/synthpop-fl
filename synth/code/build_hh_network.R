@@ -1,9 +1,9 @@
 rm(list=ls()[ls() != "lcfg"])
 
 #### Build household network
-pers <- fread("synth/output/pers_w_wid.csv")
-hh <- fread("synth/output/hh_coords.csv")
-nh <- fread("synth/output/nh.csv")
+pers <- fread("synth/tmp/pers_w_wid.csv")
+hh <- fread("synth/tmp/hh_coords.csv")
+nh <- fread("synth/tmp/nh.csv")
 
 hh_nh <- inner_join(hh, nh %>% select(x, y))
 hh_nonnh <- hh %>%
@@ -43,6 +43,6 @@ edges_hid <- cbind(HID1 = hid1, HID2 = hid2) %>% as.data.table
 
 ## Export
 # write_csv(as.data.frame(edges), "./tmp/edges.csv")
-# write_delim(as.data.frame(edges_hid), "./output/network-florida.txt", col_names = F)
-# file.copy("./output/network-florida.txt", "sim_pop-florida/network-florida.txt")
-fwrite(edges_hid, "synth/output/hh_network.csv")
+# write_delim(as.data.frame(edges_hid), "./tmp/network-florida.txt", col_names = F)
+# file.copy("./tmp/network-florida.txt", "sim_pop-florida/network-florida.txt")
+fwrite(edges_hid, "synth/tmp/hh_network.csv")

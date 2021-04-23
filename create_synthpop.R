@@ -14,12 +14,12 @@ library(RSQLite)
 options(datatable.na.strings=c("", "NA")) # Making sure data.table properly reads NA
 
 lcfg <- jsonlite::read_json("synth/local_config.json", simplifyVector = T)
+lcfg$vers <- "3.1"
 
 cat(paste0("Creating dataset with name of: ", lcfg$target_county, "\n"))
 
 #### Build synthetic population sqlite using files in data folder
 
-dir.create("synth/output", showWarnings = F)
 dir.create("synth/tmp", showWarnings = F)
 
 source("synth/code/extract_ipums.R")

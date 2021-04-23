@@ -1,9 +1,9 @@
 rm(list=ls()[ls() != "lcfg"])
 
 #### Assign workers to workplace by way of gravity
-wp <- fread("synth/output/wp.csv")
-pers <- fread("synth/output/person_details.csv")
-hh <- fread("synth/output/hh_coords.csv")
+wp <- fread("synth/tmp/wp.csv")
+pers <- fread("synth/tmp/person_details.csv")
+hh <- fread("synth/tmp/hh_coords.csv")
 
 emp_pers <- pers %>%
   filter(EMPSTATD >= 10 & EMPSTATD < 14) %>%
@@ -80,5 +80,5 @@ pers1 <- pers %>% left_join(emp_pers %>% select(PID, WID2))
 table(is.na(pers1$WID2))
 
 #### Export ----
-fwrite(pers1, "synth/output/pers_w_wid.csv")
-fwrite(wp2, "synth/output/wp2.csv")
+fwrite(pers1, "synth/tmp/pers_w_wid.csv")
+fwrite(wp2, "synth/tmp/wp2.csv")

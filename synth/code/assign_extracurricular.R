@@ -3,9 +3,9 @@ rm(list=ls()[ls() != "lcfg"])
 #### Assign Extracurricular places
 
 #### Load Data ----
-wp <- fread("synth/output/wp2.csv")
-pers <- fread("synth/output/pers_w_wid.csv")
-hh <- fread("synth/output/hh_coords.csv")
+wp <- fread("synth/tmp/wp2.csv")
+pers <- fread("synth/tmp/pers_w_wid.csv")
+hh <- fread("synth/tmp/hh_coords.csv")
 patterns <- fread(lcfg$path_pattern, keepLeadingZeros = T)
 patterns$PUMA5CE <- str_pad(patterns$PUMA5CE, width = 5, side = "left", pad = "0")
 
@@ -118,5 +118,5 @@ wp <- wp %>%
   left_join(naics_lookup %>% select(TRANSMISSION = grp, NAICS = naics_code))
 
 ## Export
-fwrite(ec_network_df, "synth/output/extracurricular.csv")
-fwrite(wp, "synth/output/wp2.csv")
+fwrite(ec_network_df, "synth/tmp/extracurricular.csv")
+fwrite(wp, "synth/tmp/wp2.csv")
