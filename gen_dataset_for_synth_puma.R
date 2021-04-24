@@ -23,6 +23,7 @@ cat(paste0("Building foundation dataset based on config file from ", cfg_file, "
 
 cfg <- jsonlite::read_json(cfg_file, simplifyVector = T)
 cfg <- make_full_path(cfg)
+essential_col <- jsonlite::read_json("synth/data_check.json", simplifyVector = T)
 
 if (length(cfg$target_puma) == 0) {
   stop("No PUMA specified...")
@@ -38,6 +39,9 @@ lof <- list.files("synth/data", full.names = T)
 lof <- lof[!str_detect(lof, "reusable")]
 quiet(file.remove(lof))
 
+## Useful function
+load_check <- function (item, type = "table") load_and_check(item, cfg, essential_col, type)
+
 #### Generate Dataset
 ## FIPS not needed anymore, skipping counties stuff
 
@@ -45,8 +49,7 @@ quiet(file.remove(lof))
 if (!require("ipumsr")) stop("Reading IPUMS data into R requires the ipumsr package. It can be installed using the following command: install.packages('ipumsr')")
 
 ## Load original
-ddi <- read_ipums_ddi(cfg$path_ipums_xml)
-quiet(data <- read_ipums_micro(ddi)) # .dat file needs to be in same folder as xml
+data <- load_check("ipums", "ipums") # .dat file needs to be in same folder as xml
 data$PUMA1 <- str_pad(data$PUMA,
                       width = 5,
                       side = "left",
@@ -78,16 +81,16 @@ quiet(data <- read_ipums_micro(ddi))
 
 
 #### Census Tract Shape ----
-quiet(cenacs <- st_read(cfg$path_cenblock_shape))
+cenacs <- load_check("cenblock_shape", "shape")
 
 ct_to_puma_fn <- basename(cfg$path_centract_puma)
 quiet(file.copy(cfg$path_centract_puma, "synth/data", overwrite = T))
 synth_paths$path_centract_puma <- file.path("synth/data", ct_to_puma_fn)
-cat("Census tract to PUMA lookup created in synth/data/\n")
 
-ct_to_puma <- read_csv(cfg$path_centract_puma, col_types = cols())
+ct_to_puma <- load_check("centract_puma", "table")
 ct_to_puma <- ct_to_puma %>%
   filter(STATEFP == "12")
+cat("Census tract to PUMA lookup created in synth/data/\n")
 
 quiet(cenacs <- left_join(cenacs,
                           ct_to_puma,
@@ -124,7 +127,7 @@ cat("Population density raster file created in synth/data/\n")
 fl_hh <- raster(synth_paths$path_hhdens_raster)
 
 #### Nursing home ----
-nh_raw <- data.table::fread(cfg$path_nh)
+nh_raw <- load_check("nh")
 nh_sf <- st_as_sf(nh_raw[,c("X", "Y")], coords = c("X", "Y")) %>%
   st_set_crs(4326)
 quiet(nh_sf <- nh_sf %>%
@@ -143,7 +146,7 @@ quiet(nh <- read_csv(synth_paths$path_nh, col_types = cols()))
 cat("Nursing home table created in synth/data/\n")
 
 #### Schools ----
-quiet(gc_sch <- st_read(cfg$path_schools_shape))
+gc_sch <- load_check("schools_shape", "shape")
 
 gc_sch_wgs <- st_transform(gc_sch, 4326)
 quiet(tmp <- st_join(gc_sch_wgs, cenacs_wgs))
@@ -159,7 +162,7 @@ quiet(st_write(gc_sch, dsn = "synth/data", layer = sch_fn1,
 cat("Schools data table created in synth/data/\n")
 
 ## College and University category has additional file
-cu <- data.table::fread(cfg$path_col_uni_size)
+cu <- load_check("col_uni_size")
 cu <- cu %>%
   filter(AUTOID %in% gc_sch$AUTOID)
 
@@ -170,7 +173,7 @@ data.table::fwrite(cu, synth_paths$path_col_uni_size)
 cat("College/University data table created in synth/data/\n")
 
 #### Workplace Area Characteristics ----
-quiet(wac <- st_read(cfg$path_wac_shape))
+wac <- load_check("wac_shape", "shape")
 wac <- wac[wac$TRACTCE10 %in% cenacs_wgs$TRACTCE10,]
 wac <- wac %>% dplyr::select(-SHAPE_AREA, -SHAPE_LEN)
 
@@ -194,10 +197,13 @@ synth_paths$path_naics_size <- file.path("synth/data", naics_wp_fn)
 naics_lkup_fn <- basename(cfg$path_naics_lookup)
 quiet(file.copy(cfg$path_naics_lookup, "synth/data/", overwrite = T))
 synth_paths$path_naics_lookup <- file.path("synth/data", naics_lkup_fn)
+
+naics_wp <- load_check("naics_size")
+naics_lkup <- load_check("naics_lookup")
 cat("NAICS lookup and size data created in synth/data/\n")
 
 #### NCD Workplace data ----
-wp_coords <- data.table::fread(cfg$path_workplace)
+wp_coords <- load_check("workplace")
 
 wp_sf <- st_as_sf(wp_coords[,c("x", "y")], coords = c("x", "y")) %>%
   st_set_crs(4326)
@@ -213,7 +219,7 @@ data.table::fwrite(wp_coords, synth_paths$path_workplace)
 cat("Workplace data created in synth/data/\n")
 
 #### HF data ----
-hf <- data.table::fread(cfg$path_hf) %>%
+hf <- load_check("hf") %>%
   filter(!is.na(X))
 hf_sf <- hf[,c("X", "Y")] %>%
   st_as_sf(coords = c("X", "Y"), crs = 4326)
@@ -233,6 +239,7 @@ cat("Hospital data created in synth/data/\n")
 brfss_fn <- basename(cfg$path_brfss)
 synth_paths$path_brfss <- file.path("synth/data", brfss_fn)
 
+brfss <- load_check("brfss")
 quiet(file.copy(cfg$path_brfss, synth_paths$path_brfss, overwrite = T))
 cat("BRFSS data created in synth/data/\n")
 
@@ -243,6 +250,7 @@ if (cfg$extracurricular != 0) {
   synth_paths$path_patterns <- file.path("synth/data", patterns_fn)
   
   quiet(file.copy(cfg$path_patterns, synth_paths$path_patterns, overwrite = T))
+  patterns <- load_check("patterns")
   cat("Extracurricular mode on, mobility pattern data created in synth/data\n")
 }
 

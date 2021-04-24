@@ -1,0 +1,18 @@
+{
+  "county_shape": ["TIGERNAME", "FIPS"],
+  "ipums": ["YEAR", "SAMPLE", "SERIAL", "HHWT", "COUNTYFIP", "PUMA", "PERNUM", "PERWT", 
+            "SEX", "AGE", "SCHOOL", "EMPSTAT", "EMPSTATD", "PWSTATE2", "PWCOUNTY", 
+            "PWPUMA00", "TRANWORK", "TRANTIME", "GQ"],
+  "centract_puma": ["COUNTYFP", "TRACTCE", "PUMA5CE"],
+  "cenblock_shape": ["STATEFP10", "COUNTYFP10", "TRACTCE10", "GEOID10", "TOTALPOP", "HOUSEHOLDS"],
+  "nh": ["X", "Y", "POPULATION"],
+  "schools_shape": ["AUTOID", "FLAG", "TYPE"],
+  "col_uni_size": ["AUTOID", "Population"],
+  "hf": ["X", "Y", "AHCA_number", "Name", "Licensed_Beds"],
+  "naics_size": ["NAICS 1 Code", "1 - 4 employees", "5 - 9 employees", "10 - 19 employees", "20 - 49 employees", "50 - 99 employees", "100 - 249 employees", "250 - 499 employees", "500 - 999 employees", "1,000+ employees", "Grand Total"],
+  "naics_lookup": ["NAICS_2017", "NAICS_2012"],
+  "workplace": ["serial", "x", "y", "naics", "naics_essential_classification"],
+  "wac_shape": ["TRACTCE10", "TOTAL_JOBS"],
+  "brfss": ["SEX", "AGEGRP", "IMPCTY", "prob"],
+  "patterns": ["grp", "naics_code", "top_category", "sub_category", "PUMA5CE", "raw_visit_counts"]
+}

@@ -6,7 +6,7 @@ rm(list=ls()[ls() != "lcfg"])
 wp <- fread("synth/tmp/wp2.csv")
 pers <- fread("synth/tmp/pers_w_wid.csv")
 hh <- fread("synth/tmp/hh_coords.csv")
-patterns <- fread(lcfg$path_pattern, keepLeadingZeros = T)
+patterns <- fread(lcfg$path_patterns, keepLeadingZeros = T)
 patterns$PUMA5CE <- str_pad(patterns$PUMA5CE, width = 5, side = "left", pad = "0")
 
 cenacs <- st_read(lcfg$path_cenblock_shape)
