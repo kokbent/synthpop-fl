@@ -1,5 +1,5 @@
 #### Post processing of data
-# rm(list=ls())
+source("utils.R")
 
 #### Data import
 wp <- fread("synth/tmp/wp2.csv")
@@ -225,13 +225,12 @@ dbWriteTable(mydb, "movement", movement_db)
 dbWriteTable(mydb, "reside", reside_db)
 
 #### Incorporate HH network and Extracurricular data
-rm(pers_db, pers, pers_nh)
-rm(hh_db, hh, hh_nh, hh_nonnh)
-rm(sch_db, sch)
-rm(nh_db, nh)
-rm(wp_db, wp)
-rm(movement_db)
-rm(reside_db)
+## Remove stuff from RAM to reduce stress...
+rm(pers, pers_nh)
+rm(hh, hh_nh, hh_nonnh)
+rm(sch)
+rm(nh)
+rm(wp)
 gc()
 
 ## HH Network
@@ -253,7 +252,7 @@ hh_edge2 <- hh_edge2$locid
 hh_edge <- data.frame(locid1 = hh_edge1, locid2 = hh_edge2)
 dbWriteTable(mydb, "hh_network", hh_edge)
 
-rm(hh_edge, hh_edge1, hh_edge2)
+rm(hh_edge1, hh_edge2)
 
 ## Neighbour Network
 # nb_edge <- fread("synth/tmp/neighbour_network.csv")
@@ -284,6 +283,8 @@ if (lcfg$extracurricular != 0) {
 dbDisconnect(mydb)
 
 cat("=================================================\n")
+source("synth/code/generate_summary.R")
+
 cat("Synthetic population data written into SQLite database ", sqlitename, "\n")
 
 tgzname <- paste0("sim_pop-", lcfg$target_county, "-", lcfg$vers, ".tgz")
