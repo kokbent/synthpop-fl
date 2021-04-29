@@ -139,7 +139,7 @@ if (extracurricular_mode) {
   ec <- dbGetQuery(con, sql)
   ec <- ec - 1
   
-  message("Preview for ec")
+  message("Preview for public-activity")
   print(head(ec))
   fwrite(ec, paste0(out_folder, "public-activity-", cnt, ".txt"), sep = " ")
   
@@ -148,6 +148,8 @@ if (extracurricular_mode) {
     as.vector()
   ec_vec <- unique(ec_vec) %>% sort()
   ec_df <- data.frame(ec = ec_vec)
+  message("Preview for public-locations")
+  print(head(ec_df[-1,]))
   fwrite(ec_df, paste0(out_folder, "public-locations-", cnt, ".txt"), sep = " ", 
          col.names = F)
 }
