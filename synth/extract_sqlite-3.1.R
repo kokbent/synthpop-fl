@@ -1,9 +1,9 @@
 rm(list=ls())
 
-if (!require("dplyr")) stop("dplyr package is required but not installed.")
-if (!require("data.table")) stop("readr package is required but not installed.")
-if (!require("RSQLite")) stop("RSQLite package is required but not installed.")
-if (!require("stringr")) stop("stringr package is required but not installed.")
+package <- c("dplyr", "data.table", "RSQLite", "stringr")
+pkg_cond <- sapply(package, require, character.only = T, quietly = T)
+if (any(!pkg_cond)) stop("Following package(s) are required but not installed: ",
+                         paste(package[!pkg_cond], collapse = ", "))
 options(scipen = 10)
 
 #### Getting Rscript args
@@ -149,7 +149,7 @@ if (extracurricular_mode) {
   ec_vec <- unique(ec_vec) %>% sort()
   ec_df <- data.frame(ec = ec_vec)
   message("Preview for public-locations")
-  print(head(ec_df[-1,]))
+  print(head(ec_df))
   fwrite(ec_df, paste0(out_folder, "public-locations-", cnt, ".txt"), sep = " ", 
          col.names = F)
 }
