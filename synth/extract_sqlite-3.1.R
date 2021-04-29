@@ -4,6 +4,7 @@ if (!require("dplyr")) stop("dplyr package is required but not installed.")
 if (!require("data.table")) stop("readr package is required but not installed.")
 if (!require("RSQLite")) stop("RSQLite package is required but not installed.")
 if (!require("stringr")) stop("stringr package is required but not installed.")
+options(scipen = 10)
 
 #### Getting Rscript args
 arg <- commandArgs(trailingOnly=TRUE)
@@ -140,7 +141,15 @@ if (extracurricular_mode) {
   
   message("Preview for ec")
   print(head(ec))
-  fwrite(ec, paste0(out_folder, "extracurricular-", cnt, ".txt"), sep = " ")
+  fwrite(ec, paste0(out_folder, "public-activity-", cnt, ".txt"), sep = " ")
+  
+  ec_vec <- ec[,-1] %>%
+    as.matrix() %>%
+    as.vector()
+  ec_vec <- unique(ec_vec) %>% sort()
+  ec_df <- data.frame(ec = ec_vec)
+  fwrite(ec_df, paste0(out_folder, "public-locations-", cnt, ".txt"), sep = " ", 
+         col.names = F)
 }
 
 
