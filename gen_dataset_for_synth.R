@@ -74,8 +74,10 @@ data$COUNTYFIP1 <- str_pad(data$COUNTYFIP,
                            pad = "0")
 
 ## Identify the lines that are within target county
-if (cfg$use_statewide_census != 1) {
-  ind <- which(data$COUNTYFIP1 == fips)  
+if (statewide_mode) {
+  ind <- 1:nrow(data)
+} else if (cfg$use_statewide_census != 1) {
+  ind <- which(data$COUNTYFIP1 %in% fips)  
 } else {
   ind <- 1:nrow(data)
 }
@@ -114,7 +116,7 @@ quiet(cenacs <- left_join(cenacs,
                           ct_to_puma,
                           by = c("STATEFP10" = "STATEFP", "COUNTYFP10" = "COUNTYFP", "TRACTCE10" = "TRACTCE")))
 
-cond <- cenacs$COUNTYFP10 == fips
+cond <- cenacs$COUNTYFP10 %in% fips
 cenacs1 <- cenacs[cond,]
 cenacs1 <- cenacs1 %>% select(-PUMA5CE, -SHAPE_AREA, -SHAPE_LEN, -ALAND, -AWATER)
 cenacs_fn <- basename(cfg$path_cenblock_shape)
@@ -197,7 +199,7 @@ cat("College/University data table created in synth/data/\n")
 
 #### Workplace Area Characteristics ----
 wac <- load_check("wac_shape", "shape")
-wac <- wac[wac$COUNTYFP10 == fips,]
+wac <- wac[wac$COUNTYFP10 %in% fips,]
 wac <- wac %>% dplyr::select(-SHAPE_AREA, -SHAPE_LEN)
 
 wac_fn <- basename(cfg$path_wac_shape)
