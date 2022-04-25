@@ -122,7 +122,8 @@ wp_sf <- st_as_sf(wp_coords2, coords = c("x", "y")) %>%
 
 cenacs2 <- cenacs %>%
   select(TRACTCE10, BLKGRPCE10) %>%
-  st_transform(st_crs(wp_sf))
+  st_transform(st_crs(wp_sf)) %>%
+  st_make_valid()
 
 wp <- st_join(wp_sf, cenacs2)
 wp <- cbind(wp, st_coordinates(wp)) %>%
