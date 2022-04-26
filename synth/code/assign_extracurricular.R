@@ -16,7 +16,8 @@ cenacs <- cenacs %>%
             by = c("STATEFP10" = "STATEFP", "COUNTYFP10" = "COUNTYFP", 
                    "TRACTCE10" = "TRACTCE"))
 cenacs <- cenacs %>%
-  st_transform(4326)
+  st_transform(4326) %>%
+  st_make_valid()
 
 #### Find out relevant naics
 naics_lookup <- patterns %>%
